@@ -1,6 +1,9 @@
 Treehugger
 ==========
 
+.. image:: https://travis-ci.org/timeoutdigital/treehugger.svg?branch=master
+    :target: https://travis-ci.org/timeoutdigital/treehugger
+
 Takes care of your environment (variables) on AWS.
 
 Requirements
