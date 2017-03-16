@@ -7,11 +7,13 @@ import textwrap
 from unittest import mock
 
 import pytest
+import responses
 import six
 import yaml
 
 from treehugger import __version__
 from treehugger.cli import main
+from treehugger.ec2 import USER_DATA_URL
 
 
 class TestCLI:
@@ -196,7 +198,52 @@ class TestCLI:
         out, err = capsys.readouterr()
         assert 'No command to execute provided' in err
 
-    def test_print(self, tmpdir, kms_stub, capsys):
+    @responses.activate
+    def test_print(self, kms_stub, capsys):
+        encrypted_var = base64.b64encode(b'foo')
+        responses.add(
+            responses.GET,
+            USER_DATA_URL,
+            body=textwrap.dedent('''\
+                treehugger:
+                    MY_ENCRYPTED_VAR:
+                      encrypted: {encrypted_var}
+                    MY_UNENCRYPTED_VAR: bar
+                    TREEHUGGER_APP: baz
+                    TREEHUGGER_STAGE: qux
+            '''.format(encrypted_var=encrypted_var.decode('utf-8'))),
+            status=200,
+        )
+        kms_stub.add_response(
+            'decrypt',
+            expected_params={
+                'CiphertextBlob': b'foo',
+                'EncryptionContext': {
+                    'treehugger_app': 'baz',
+                    'treehugger_key': 'MY_ENCRYPTED_VAR',
+                    'treehugger_stage': 'qux',
+                }
+            },
+            service_response={
+                'KeyId': 'treehugger',
+                'Plaintext': b'quux',
+            }
+        )
+
+        main(['print'])
+        out, err = capsys.readouterr()
+
+        out_lines = out.split('\n')
+
+        assert out_lines == [
+            'MY_ENCRYPTED_VAR=quux',
+            'MY_UNENCRYPTED_VAR=bar',
+            'TREEHUGGER_APP=baz',
+            'TREEHUGGER_STAGE=qux',
+            '',
+        ]
+
+    def test_print_file(self, tmpdir, kms_stub, capsys):
         tmpfile = tmpdir.join('test.yml')
         encrypted_var = base64.b64encode(b'foo')
         tmpfile.write(textwrap.dedent('''\
