@@ -161,7 +161,7 @@ def print_(args):
         env_dict = EnvironmentDict.from_yaml_dict(data)
     else:
         data = load_user_data_as_yaml_or_die()
-        env_dict = EnvironmentDict.from_yaml_dict(data['treehugger'])
+        env_dict = EnvironmentDict.from_yaml_dict(data)
 
     if args.only_unencrypted:
         unencrypted_env_dict = env_dict.remove_all_encrypted(plain=True)
