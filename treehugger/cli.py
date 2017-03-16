@@ -132,7 +132,7 @@ def execute(args):
         env_dict = EnvironmentDict.from_yaml_dict(data)
     else:
         data = load_user_data_as_yaml_or_die()
-        env_dict = EnvironmentDict.from_yaml_dict(data['treehugger'])
+        env_dict = EnvironmentDict.from_yaml_dict(data)
     unencrypted_env_dict = env_dict.decrypt_all_encrypted(plain=True)
     os.environ.update(unencrypted_env_dict)
     os.execlp(command[0], *command)

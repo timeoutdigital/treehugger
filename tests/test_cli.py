@@ -145,7 +145,50 @@ class TestCLI:
         assert editor_args[0] == 'nano'
         assert editor_args[1].endswith('.yml')  # temp filename
 
-    def test_exec(self, tmpdir, kms_stub):
+    @responses.activate
+    def test_exec(self, kms_stub, capsys):
+        encrypted_var = base64.b64encode(b'foo')
+        responses.add(
+            responses.GET,
+            USER_DATA_URL,
+            body=textwrap.dedent('''\
+                treehugger:
+                    MY_ENCRYPTED_VAR:
+                      encrypted: {encrypted_var}
+                    MY_UNENCRYPTED_VAR: bar
+                    TREEHUGGER_APP: baz
+                    TREEHUGGER_STAGE: qux
+            '''.format(encrypted_var=encrypted_var.decode('utf-8'))),
+            status=200,
+        )
+        kms_stub.add_response(
+            'decrypt',
+            expected_params={
+                'CiphertextBlob': b'foo',
+                'EncryptionContext': {
+                    'treehugger_app': 'baz',
+                    'treehugger_key': 'MY_ENCRYPTED_VAR',
+                    'treehugger_stage': 'qux',
+                }
+            },
+            service_response={
+                'KeyId': 'treehugger',
+                'Plaintext': b'quux',
+            }
+        )
+
+        with mock.patch('os.execlp') as mock_execlp, mock.patch('os.environ', new={}) as mock_environ:
+            main(['exec', '--', 'env'])
+
+        mock_execlp.assert_called_with('env', 'env')
+        assert mock_environ == {
+            'MY_ENCRYPTED_VAR': 'quux',
+            'MY_UNENCRYPTED_VAR': 'bar',
+            'TREEHUGGER_APP': 'baz',
+            'TREEHUGGER_STAGE': 'qux',
+        }
+
+    def test_exec_file(self, tmpdir, kms_stub):
         tmpfile = tmpdir.join('test.yml')
         encrypted_var = base64.b64encode(b'foo')
         tmpfile.write(textwrap.dedent('''\
