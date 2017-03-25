@@ -97,3 +97,9 @@ Testing
 -------
 
 Install and run ``tox`` (`docs <https://tox.readthedocs.io/en/latest/>`_).
+
+Credits
+-------
+
+Treehugger was created by Niklas Lindblad (https://github.com/nlindblad) and is now maintained by Adam Johnson
+(https://github.com/adamchainz).
