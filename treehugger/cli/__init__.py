@@ -9,18 +9,11 @@ import tempfile
 
 from six.moves import shlex_quote
 
-from .. import __version__, yaml
+from .parser import parser, subparsers
+from .. import yaml
 from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
 from ..os_ext import patch_umask
-
-parser = argparse.ArgumentParser(
-    prog='treehugger',
-    description='''
-        Takes care of the (runtime) environment. Version {version}.
-    '''.format(version=__version__),
-)
-subparsers = parser.add_subparsers(dest='command_name')
 
 
 def main(args_list=None):
