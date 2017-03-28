@@ -5,8 +5,8 @@ import sys
 
 from .decrypt_file import decrypt_file
 from .edit import edit
-from .execute import execute
 from .encrypt_file import encrypt_file
+from .execute import execute
 from .parser import parser
 from .print_out import print_out
 
@@ -21,8 +21,8 @@ def main(args_list=None):
 
 command_funcs = {
     'decrypt-file': decrypt_file,
-    'encrypt-file': encrypt_file,
     'edit': edit,
+    'encrypt-file': encrypt_file,
     'exec': execute,
     'print': print_out,
 }

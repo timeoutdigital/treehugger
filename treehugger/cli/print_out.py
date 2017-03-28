@@ -3,10 +3,10 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 from six.moves import shlex_quote
 
-from .parser import subparsers
 from .. import yaml
 from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
+from .parser import subparsers
 
 
 print_parser = subparsers.add_parser(
