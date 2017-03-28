@@ -9,10 +9,10 @@ import tempfile
 
 from six.moves import shlex_quote
 
-from . import __version__, yaml
-from .data import EnvironmentDict
-from .ec2 import load_user_data_as_yaml_or_die
-from .os_ext import patch_umask
+from .. import __version__, yaml
+from ..data import EnvironmentDict
+from ..ec2 import load_user_data_as_yaml_or_die
+from ..os_ext import patch_umask
 
 parser = argparse.ArgumentParser(
     prog='treehugger',
