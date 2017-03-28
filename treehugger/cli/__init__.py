@@ -3,16 +3,12 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import sys
 
-from six.moves import shlex_quote
-
 from .decrypt_file import decrypt_file
 from .edit import edit
 from .execute import execute
 from .encrypt_file import encrypt_file
-from .parser import parser, subparsers
-from .. import yaml
-from ..data import EnvironmentDict
-from ..ec2 import load_user_data_as_yaml_or_die
+from .parser import parser
+from .print_out import print_out
 
 
 def main(args_list=None):
@@ -28,47 +24,5 @@ command_funcs = {
     'encrypt-file': encrypt_file,
     'edit': edit,
     'exec': execute,
+    'print': print_out,
 }
-
-
-print_parser = subparsers.add_parser(
-    'print',
-    description='''
-        Print all environment variables, from EC2 User Data or a file.
-    ''',
-)
-print_parser.add_argument('-f', '--file', type=str, default=None, dest='filename',
-                          help='The path to the file to use for environment variables, as opposed to EC2 User Data')
-print_parser.add_argument('--only-unencrypted', action='store_true',
-                          help="Ignore encrypted variables and only output those that aren't encrypted")
-print_parser.add_argument('--single-line', action='store_true',
-                          help='Output all the variables on a single line, separated by spaces')
-
-
-def print_(args):
-    if args.filename:
-        data = yaml.load_file_or_die(args.filename)
-        env_dict = EnvironmentDict.from_yaml_dict(data)
-    else:
-        data = load_user_data_as_yaml_or_die()
-        env_dict = EnvironmentDict.from_yaml_dict(data)
-
-    if args.only_unencrypted:
-        unencrypted_env_dict = env_dict.remove_all_encrypted(plain=True)
-    else:
-        unencrypted_env_dict = env_dict.decrypt_all_encrypted(plain=True)
-
-    output = [
-        '{}={}'.format(key, shlex_quote(value))
-        for key, value in sorted(unencrypted_env_dict.items())
-    ]
-
-    if args.single_line:
-        joiner = ' '
-    else:
-        joiner = '\n'
-
-    print(joiner.join(output))
-
-
-command_funcs['print'] = print_
