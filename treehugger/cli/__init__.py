@@ -9,7 +9,9 @@ import tempfile
 
 from six.moves import shlex_quote
 
+from .decrypt_file import decrypt_file
 from .parser import parser, subparsers
+from .utils import load_and_decrypt_file, load_and_encrypt_file
 from .. import yaml
 from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
@@ -25,22 +27,6 @@ def main(args_list=None):
 
 
 command_funcs = {}
-
-
-decrypt_file_parser = subparsers.add_parser(
-    'decrypt-file',
-    description='Decrypt a Treehugger YAML file in-place.',
-)
-decrypt_file_parser.add_argument('filename', type=str, help='The path to the file to decrypt')
-
-
-def decrypt_file(args):
-    filename = args.filename
-
-    new_data = load_and_decrypt_file(filename)
-    yaml.save_file(filename, new_data)
-
-    print('Successfully decrypted')
 
 
 command_funcs['decrypt-file'] = decrypt_file
@@ -175,22 +161,3 @@ def print_(args):
 
 
 command_funcs['print'] = print_
-
-
-# Helpers
-
-
-def load_and_decrypt_file(filename):
-    data = yaml.load_file_or_die(filename)
-
-    env_dict = EnvironmentDict.from_yaml_dict(data)
-    unencrypted_env_dict = env_dict.decrypt_all_encrypted()
-    return unencrypted_env_dict.to_yaml_dict()
-
-
-def load_and_encrypt_file(filename):
-    data = yaml.load_file_or_die(filename)
-
-    env_dict = EnvironmentDict.from_yaml_dict(data)
-    encrypted_env_dict = env_dict.encrypt_all_to_encrypt()
-    return encrypted_env_dict.to_yaml_dict()
