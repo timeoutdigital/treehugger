@@ -60,6 +60,77 @@ class TestCLI:
         assert data['TREEHUGGER_APP'] == 'baz'
         assert data['TREEHUGGER_STAGE'] == 'qux'
 
+    def test_encrypt_different_key(self, tmpdir, kms_stub):
+        key_arn = 'arn:aws:kms:eu-west-1:123456789012:alias/treehugger'
+        tmpfile = tmpdir.join('test.yml')
+        tmpfile.write(textwrap.dedent('''\
+            MY_ENCRYPTED_VAR:
+              to_encrypt: foo
+            MY_UNENCRYPTED_VAR: bar
+            TREEHUGGER_APP: baz
+            TREEHUGGER_STAGE: qux
+        '''))
+        kms_stub.add_response(
+            'encrypt',
+            expected_params={
+                'KeyId': key_arn,
+                'Plaintext': b'foo',
+                'EncryptionContext': {
+                    'treehugger_app': 'baz',
+                    'treehugger_key': 'MY_ENCRYPTED_VAR',
+                    'treehugger_stage': 'qux',
+                }
+            },
+            service_response={
+                'KeyId': 'treehugger',
+                'CiphertextBlob': b'quux',
+            }
+        )
+
+        main(['-k', key_arn, 'encrypt-file', six.text_type(tmpfile)])
+
+        data = yaml.load(tmpfile.read())
+        assert list(data['MY_ENCRYPTED_VAR'].keys()) == ['encrypted']
+        assert data['MY_UNENCRYPTED_VAR'] == 'bar'
+        assert data['TREEHUGGER_APP'] == 'baz'
+        assert data['TREEHUGGER_STAGE'] == 'qux'
+
+    def test_encrypt_different_key_env_var(self, tmpdir, kms_stub):
+        key_id = '3ab83b21-962e-2121-98b5-072cc2f296f1'
+        tmpfile = tmpdir.join('test.yml')
+        tmpfile.write(textwrap.dedent('''\
+            MY_ENCRYPTED_VAR:
+              to_encrypt: foo
+            MY_UNENCRYPTED_VAR: bar
+            TREEHUGGER_APP: baz
+            TREEHUGGER_STAGE: qux
+        '''))
+        kms_stub.add_response(
+            'encrypt',
+            expected_params={
+                'KeyId': key_id,
+                'Plaintext': b'foo',
+                'EncryptionContext': {
+                    'treehugger_app': 'baz',
+                    'treehugger_key': 'MY_ENCRYPTED_VAR',
+                    'treehugger_stage': 'qux',
+                }
+            },
+            service_response={
+                'KeyId': 'treehugger',
+                'CiphertextBlob': b'quux',
+            }
+        )
+
+        with mock.patch.dict(os.environ, {'TREEHUGGER_KEY': key_id}):
+            main(['encrypt-file', six.text_type(tmpfile)])
+
+        data = yaml.load(tmpfile.read())
+        assert list(data['MY_ENCRYPTED_VAR'].keys()) == ['encrypted']
+        assert data['MY_UNENCRYPTED_VAR'] == 'bar'
+        assert data['TREEHUGGER_APP'] == 'baz'
+        assert data['TREEHUGGER_STAGE'] == 'qux'
+
     def test_decrypt(self, tmpdir, kms_stub):
         tmpfile = tmpdir.join('test.yml')
         encrypted_var = base64.b64encode(b'foo')

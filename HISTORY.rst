@@ -8,6 +8,9 @@ Pending Release
 ---------------
 
 * (Insert new release notes below this line)
+* Support using a different KMS key (ID, Alias, or ARN) for encryption from the
+  ``-k``/``--key`` argument or the environment variable ``TREEHUGGER_KEY``.
+  This is mostly useful for cross-account key sharing.
 
 1.0.2 (2017-03-16)
 ------------------

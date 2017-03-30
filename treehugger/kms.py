@@ -11,6 +11,8 @@ from .ec2 import get_current_region
 
 class KMSAgent(object):
 
+    key_id = 'alias/treehugger'
+
     @property
     def kms_client(self):
         if not hasattr(self, '_kms_client'):
@@ -31,7 +33,7 @@ class KMSAgent(object):
 
     def encrypt(self, plaintext, encryption_context):
         response = self.kms_client.encrypt(
-            KeyId='alias/treehugger',
+            KeyId=self.key_id,
             Plaintext=plaintext.encode('utf-8'),
             EncryptionContext=encryption_context
         )
