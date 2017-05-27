@@ -5,9 +5,14 @@ import yaml
 from requests import Session
 from requests.adapters import HTTPAdapter
 from requests.exceptions import ConnectionError, ConnectTimeout, HTTPError
-from requests.packages.urllib3.util.retry import Retry
 
 from .messaging import die
+
+try:
+    from urllib3.util.retry import Retry
+except ImportError:
+    # Requests < 2.16.0
+    from requests.packages.urllib3.util.retry import Retry
 
 USER_DATA_URL = 'http://169.254.169.254/latest/user-data'
 
