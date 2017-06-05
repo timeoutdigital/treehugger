@@ -11,7 +11,6 @@ from ..os_ext import patch_umask
 from .parser import subparsers
 from .utils import load_and_decrypt_file, load_and_encrypt_file
 
-
 edit_parser = subparsers.add_parser(
     'edit',
     description='Decrypt a treehugger YAML file temporarily, edit it with $EDITOR, then re-encrypt it.',

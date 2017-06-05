@@ -8,7 +8,6 @@ from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
 from .parser import subparsers
 
-
 print_parser = subparsers.add_parser(
     'print',
     description='''

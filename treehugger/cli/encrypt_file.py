@@ -5,7 +5,6 @@ from .. import yaml
 from .parser import subparsers
 from .utils import load_and_encrypt_file
 
-
 encrypt_file_parser = subparsers.add_parser(
     'encrypt-file',
     description='Encrypt a Treehugger YAML file in-place.'
