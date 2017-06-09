@@ -6,9 +6,9 @@
 #
 backports.unittest-mock==1.3
 boto3==1.4.4
-botocore==1.5.63          # via boto3, s3transfer
+botocore==1.5.64          # via boto3, s3transfer
 certifi==2017.4.17        # via requests
-chardet==3.0.3            # via requests
+chardet==3.0.4            # via requests
 configparser==3.5.0       # via flake8
 cookies==2.2.1            # via responses
 docutils==0.13.1
