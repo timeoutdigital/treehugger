@@ -20,7 +20,8 @@ print_parser.add_argument('--only-unencrypted', action='store_true',
                           help="Ignore encrypted variables and only output those that aren't encrypted")
 print_parser.add_argument('--single-line', action='store_true',
                           help='Output all the variables on a single line, separated by spaces')
-
+print_parser.add_argument('--export', action='store_true',
+                          help='Output all the variables in a way that can be evaulated by sh')
 
 def print_out(args):
     if args.filename:
@@ -35,8 +36,11 @@ def print_out(args):
     else:
         unencrypted_env_dict = env_dict.decrypt_all_encrypted(plain=True)
 
+    fmt = '{}={}'.format
+    if args.export:
+        fmt = 'export {}={};'.format
     output = [
-        '{}={}'.format(key, shlex_quote(value))
+        fmt(key, shlex_quote(value))
         for key, value in sorted(unencrypted_env_dict.items())
     ]
 
