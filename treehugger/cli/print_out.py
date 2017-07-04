@@ -38,7 +38,7 @@ def print_out(args):
 
     fmt = '{}={}'.format
     if args.export:
-        fmt = 'export {}={};'.format
+        fmt = 'export {}={} ;'.format
     output = [
         fmt(key, shlex_quote(value))
         for key, value in sorted(unencrypted_env_dict.items())
