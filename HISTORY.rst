@@ -8,6 +8,7 @@ Pending Release
 ---------------
 
 * (Insert new release notes below this line)
+* Add ``--json`` argument to print command.
 
 1.1.0 (2017-04-05)
 ------------------

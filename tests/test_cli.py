@@ -450,3 +450,42 @@ class TestCLI:
         out, err = capsys.readouterr()
 
         assert out == 'MY_UNENCRYPTED_VAR=bar TREEHUGGER_APP=baz TREEHUGGER_STAGE=qux\n'
+
+
+    def test_print_json_single_line(self, tmpdir, capsys):
+        tmpfile = tmpdir.join('test.yml')
+        tmpfile.write(textwrap.dedent('''\
+            MY_UNENCRYPTED_VAR: bar
+            TREEHUGGER_APP: baz
+            TREEHUGGER_STAGE: qux
+        '''))
+
+        main(['print', '-f', six.text_type(tmpfile), '--json', '--single-line'])
+        out, err = capsys.readouterr()
+
+        assert out == (
+            '{' +
+            '"MY_UNENCRYPTED_VAR": "bar", ' +
+            '"TREEHUGGER_APP": "baz", ' +
+            '"TREEHUGGER_STAGE": "qux"' +
+            '}\n'
+        )
+
+    def test_print_json(self, tmpdir, capsys):
+        tmpfile = tmpdir.join('test.yml')
+        tmpfile.write(textwrap.dedent('''\
+            MY_UNENCRYPTED_VAR: bar
+            TREEHUGGER_APP: baz
+            TREEHUGGER_STAGE: qux
+        '''))
+
+        main(['print', '-f', six.text_type(tmpfile), '--json'])
+        out, err = capsys.readouterr()
+
+        assert out == textwrap.dedent('''\
+            {
+                "MY_UNENCRYPTED_VAR": "bar",
+                "TREEHUGGER_APP": "baz",
+                "TREEHUGGER_STAGE": "qux"
+            }
+        ''')
