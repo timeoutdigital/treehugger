@@ -9,6 +9,6 @@ multilint
 Pygments
 pytest
 pytest-responses
-PyYAML
 requests
 six
+ruamel.yaml
