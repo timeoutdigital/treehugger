@@ -1,12 +1,15 @@
 # -*- coding:utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import copy
+
 import six
+from ruamel.yaml.comments import CommentedMap
 
 from .kms import kms_agent
 
 
-class EnvironmentDict(dict):
+class EnvironmentDict(CommentedMap):
 
     @classmethod
     def from_yaml_dict(cls, obj):
@@ -24,7 +27,10 @@ class EnvironmentDict(dict):
         )
         """
         assert isinstance(obj, dict)
-        new = EnvironmentDict()
+
+        new = copy.deepcopy(obj)
+        new.__class__ = EnvironmentDict
+
         for key, value in obj.items():
             assert isinstance(key, six.string_types), "Keys must be strings in treehugger data"
             if isinstance(value, dict):
@@ -40,7 +46,10 @@ class EnvironmentDict(dict):
         return new
 
     def to_yaml_dict(self):
-        new = {}
+
+        new = copy.deepcopy(self)
+        new.__class__ = CommentedMap
+
         for key, value in self.items():
             if isinstance(value, six.string_types):
                 new[key] = value
@@ -54,7 +63,10 @@ class EnvironmentDict(dict):
 
     def decrypt_all_encrypted(self, plain=False):
         base_encryption_context = self.get_base_encryption_context()
-        new = EnvironmentDict()
+
+        new = copy.deepcopy(self)
+        new.__class__ = EnvironmentDict
+
         for key, value in self.items():
             if isinstance(value, Encrypted):
                 encryption_context = base_encryption_context.copy()
@@ -75,7 +87,10 @@ class EnvironmentDict(dict):
 
     def encrypt_all_to_encrypt(self):
         base_encryption_context = self.get_base_encryption_context()
-        new = EnvironmentDict()
+
+        new = copy.deepcopy(self)
+        new.__class__ = EnvironmentDict
+
         for key, value in self.items():
             if isinstance(value, ToEncrypt):
                 encryption_context = base_encryption_context.copy()
@@ -87,7 +102,9 @@ class EnvironmentDict(dict):
         return new
 
     def remove_all_encrypted(self, plain=False):
-        new = EnvironmentDict()
+        new = copy.deepcopy(self)
+        new.__class__ = EnvironmentDict
+
         for key, value in self.items():
             if isinstance(value, Encrypted):
                 pass
