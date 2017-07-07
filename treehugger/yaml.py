@@ -3,15 +3,18 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import errno
 
-import yaml
+import ruamel.yaml
 
 from .messaging import die
+
+yaml = ruamel.yaml.YAML()
+yaml.allow_unicode = True
 
 
 def load_file_or_die(filename):
     try:
         with open(filename, 'r') as fp:
-            return yaml.safe_load(fp)
+            return yaml.load(fp)
     except IOError as exc:
         if exc.errno == errno.ENOENT:
             die('File does not exist!')
@@ -24,9 +27,7 @@ def save_file(filename, data):
 
 
 def save_fp(fp, data):
-    yaml.safe_dump(
+    yaml.dump(
         data,
         fp,
-        allow_unicode=True,
-        width=10000,
     )
