@@ -33,7 +33,7 @@ pytest==3.2.0
 python-dateutil==2.6.1    # via botocore
 pyyaml==3.12
 requests==2.18.3
-responses==0.6.0          # via pytest-responses
+responses==0.6.1          # via pytest-responses
 s3transfer==0.1.10        # via boto3
 six==1.10.0
 urllib3==1.22             # via requests
