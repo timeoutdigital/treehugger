@@ -8,6 +8,10 @@ Pending Release
 ---------------
 
 * (Insert new release notes below this line)
+
+1.2.0 (2017-08-31)
+------------------
+
 * Add ``--json`` argument to ``print`` command.
 * Make 'edit' reuse previous encrypted values that weren't changed.
 
