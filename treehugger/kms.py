@@ -11,6 +11,9 @@ from .ec2 import get_current_region
 
 class KMSAgent(object):
 
+    def __init__(self):
+        self.cache = {}
+
     key_id = 'alias/treehugger'
 
     @property
@@ -29,9 +32,14 @@ class KMSAgent(object):
             CiphertextBlob=cipher_blob,
             EncryptionContext=encryption_context,
         )
-        return response['Plaintext'].decode('utf-8')
+        plaintext = response['Plaintext'].decode('utf-8')
+        self.cache[plaintext] = base64_ciphertext
+        return plaintext
 
     def encrypt(self, plaintext, encryption_context):
+        if plaintext in self.cache:
+            return self.cache[plaintext]
+
         response = self.kms_client.encrypt(
             KeyId=self.key_id,
             Plaintext=plaintext.encode('utf-8'),
