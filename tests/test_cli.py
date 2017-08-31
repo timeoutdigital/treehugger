@@ -191,11 +191,34 @@ class TestCLI:
                 'Plaintext': b'quux',
             }
         )
+
+        def fake_call(command, *args, **kwargs):
+            assert len(command) == 2
+            assert command[0] == 'nano'
+            filename = command[1]
+            with open(filename, 'r') as fp:
+                obj = yaml.safe_load(fp.read())
+            assert obj == {
+                'MY_ENCRYPTED_VAR': {'to_encrypt': 'quux'},
+                'MY_UNENCRYPTED_VAR': 'bar',
+                'TREEHUGGER_APP': 'baz',
+                'TREEHUGGER_STAGE': 'qux',
+            }
+
+            with open(filename, 'w') as fp:
+                fp.write(textwrap.dedent('''\
+                    MY_ENCRYPTED_VAR: {to_encrypt: quux2}
+                    MY_UNENCRYPTED_VAR: bar
+                    TREEHUGGER_APP: baz
+                    TREEHUGGER_STAGE: qux
+                '''))
+            return 0
+
         kms_stub.add_response(
             'encrypt',
             expected_params={
                 'KeyId': 'alias/treehugger',
-                'Plaintext': b'quux',
+                'Plaintext': b'quux2',
                 'EncryptionContext': {
                     'treehugger_app': 'baz',
                     'treehugger_key': 'MY_ENCRYPTED_VAR',
@@ -207,15 +230,8 @@ class TestCLI:
                 'CiphertextBlob': b'foo',
             }
         )
-
-        with mock.patch.dict(os.environ, {'EDITOR': 'nano'}), mock.patch('subprocess.call') as mock_call:
-            mock_call.return_value = 0
+        with mock.patch.dict(os.environ, {'EDITOR': 'nano'}), mock.patch('subprocess.call', new=fake_call):
             main(['edit', six.text_type(tmpfile)])
-
-        editor_args = mock_call.mock_calls[0][1][0]
-        assert len(editor_args) == 2
-        assert editor_args[0] == 'nano'
-        assert editor_args[1].endswith('.yml')  # temp filename
 
     def test_edit_no_change(self, tmpdir, kms_stub):
         tmpfile = tmpdir.join('test.yml')
