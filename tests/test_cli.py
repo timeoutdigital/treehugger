@@ -192,7 +192,7 @@ class TestCLI:
             }
         )
 
-        def fake_call(command, *args, **kwargs):
+        def fake_call(command):
             assert len(command) == 2
             assert command[0] == 'nano'
             filename = command[1]

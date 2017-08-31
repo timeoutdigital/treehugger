@@ -7,6 +7,7 @@ History
 Pending Release
 ---------------
 
+* Make 'edit' reuse previous encrypted values that weren't changed.
 * (Insert new release notes below this line)
 * Add ``--json`` argument to ``print`` command.
 
