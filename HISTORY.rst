@@ -8,6 +8,8 @@ Pending Release
 ---------------
 
 * (Insert new release notes below this line)
+* Fix a bug where cached values in 'edit' would be reused when changing the
+  app, stage, or variable names, which change the KMS encryption context.
 
 1.2.0 (2017-08-31)
 ------------------
