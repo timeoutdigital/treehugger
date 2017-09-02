@@ -33,12 +33,16 @@ class KMSAgent(object):
             EncryptionContext=encryption_context,
         )
         plaintext = response['Plaintext'].decode('utf-8')
-        self.cache[plaintext] = base64_ciphertext
+        cache_key = self._cache_key(plaintext, encryption_context)
+        self.cache[cache_key] = base64_ciphertext
         return plaintext
 
     def encrypt(self, plaintext, encryption_context):
-        if plaintext in self.cache:
-            return self.cache[plaintext]
+        cache_key = self._cache_key(plaintext, encryption_context)
+        try:
+            return self.cache[cache_key]
+        except KeyError:
+            pass
 
         response = self.kms_client.encrypt(
             KeyId=self.key_id,
@@ -46,7 +50,11 @@ class KMSAgent(object):
             EncryptionContext=encryption_context
         )
         base64_ciphertext = base64.b64encode(response['CiphertextBlob'])
+        self.cache[cache_key] = base64_ciphertext
         return base64_ciphertext
+
+    def _cache_key(self, plaintext, encryption_context):
+        return (plaintext,) + tuple(sorted(encryption_context.items()))
 
 
 kms_agent = KMSAgent()
