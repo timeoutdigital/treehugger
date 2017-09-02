@@ -113,6 +113,5 @@ class TestKMSAgent:
 
         plaintext = kms_agent.decrypt(base64.b64encode(b'baz'), context)
         ciphertext_blob = kms_agent.encrypt(plaintext, context2)
-        print(base64.b64decode(ciphertext_blob))
 
         assert ciphertext_blob == base64.b64encode(b'quux')

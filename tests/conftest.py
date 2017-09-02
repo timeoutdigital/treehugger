@@ -9,7 +9,7 @@ from treehugger.kms import kms_agent
 
 @pytest.fixture(scope='function', autouse=True)
 def kms_stub():
-    kms_agent.cache = {}
+    kms_agent.reset()
     with Stubber(kms_agent.kms_client) as stubber:
         yield stubber
         stubber.assert_no_pending_responses()

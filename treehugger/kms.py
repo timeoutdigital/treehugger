@@ -11,10 +11,13 @@ from .ec2 import get_current_region
 
 class KMSAgent(object):
 
+    key_id = 'alias/treehugger'
+
     def __init__(self):
         self.cache = {}
 
-    key_id = 'alias/treehugger'
+    def reset(self):
+        self.cache = {}
 
     @property
     def kms_client(self):
