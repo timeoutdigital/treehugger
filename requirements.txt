@@ -6,7 +6,7 @@
 #
 backports.unittest-mock==1.3
 boto3==1.4.7
-botocore==1.7.12          # via boto3, s3transfer
+botocore==1.7.13          # via boto3, s3transfer
 certifi==2017.7.27.1      # via requests
 chardet==3.0.4            # via requests
 configparser==3.5.0       # via flake8
@@ -35,5 +35,5 @@ pyyaml==3.12
 requests==2.18.4
 responses==0.7.0          # via pytest-responses
 s3transfer==0.1.11        # via boto3
-six==1.10.0
+six==1.11.0
 urllib3==1.22             # via requests
