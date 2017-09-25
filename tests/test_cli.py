@@ -56,7 +56,7 @@ class TestCLI:
         main(['encrypt-file', six.text_type(tmpfile)])
 
         data = yaml.load(tmpfile.read())
-        assert list(data['MY_ENCRYPTED_VAR'].keys()) == ['encrypted']
+        assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
         assert data['MY_UNENCRYPTED_VAR'] == 'bar'
         assert data['TREEHUGGER_APP'] == 'baz'
         assert data['TREEHUGGER_STAGE'] == 'qux'
@@ -91,7 +91,7 @@ class TestCLI:
         main(['-k', key_arn, 'encrypt-file', six.text_type(tmpfile)])
 
         data = yaml.load(tmpfile.read())
-        assert list(data['MY_ENCRYPTED_VAR'].keys()) == ['encrypted']
+        assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
         assert data['MY_UNENCRYPTED_VAR'] == 'bar'
         assert data['TREEHUGGER_APP'] == 'baz'
         assert data['TREEHUGGER_STAGE'] == 'qux'
@@ -127,7 +127,7 @@ class TestCLI:
             main(['encrypt-file', six.text_type(tmpfile)])
 
         data = yaml.load(tmpfile.read())
-        assert list(data['MY_ENCRYPTED_VAR'].keys()) == ['encrypted']
+        assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
         assert data['MY_UNENCRYPTED_VAR'] == 'bar'
         assert data['TREEHUGGER_APP'] == 'baz'
         assert data['TREEHUGGER_STAGE'] == 'qux'

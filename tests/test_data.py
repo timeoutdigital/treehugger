@@ -54,7 +54,7 @@ class TestEnvironmentDict:
         obj = EnvironmentDict(
             TREEHUGGER_APP='foo',
             TREEHUGGER_STAGE='bar',
-            baz=Encrypted(base64.b64encode(b'qux')),
+            baz=Encrypted(base64.b64encode(b'qux').decode('utf-8')),
             corge=ToEncrypt('grault'),
         )
         kms_stub.add_response(
@@ -83,7 +83,7 @@ class TestEnvironmentDict:
         obj = EnvironmentDict(
             TREEHUGGER_APP='foo',
             TREEHUGGER_STAGE='bar',
-            baz=Encrypted(base64.b64encode(b'qux')),
+            baz=Encrypted(base64.b64encode(b'qux').decode('utf-8')),
             corge=ToEncrypt('grault'),
         )
         kms_stub.add_response(
@@ -133,7 +133,7 @@ class TestEnvironmentDict:
         assert obj.encrypt_all_to_encrypt() == EnvironmentDict(
             TREEHUGGER_APP='foo',
             TREEHUGGER_STAGE='bar',
-            baz=Encrypted(base64.b64encode(b'quux')),
+            baz=Encrypted(base64.b64encode(b'quux').decode('utf-8')),
         )
 
     def test_remove_all_encrypted(self):

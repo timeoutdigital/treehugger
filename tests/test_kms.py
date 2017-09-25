@@ -3,6 +3,8 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import base64
 
+import six
+
 from treehugger.kms import kms_agent
 
 
@@ -21,8 +23,9 @@ class TestKMSAgent:
                 'Plaintext': b'qux',
             }
         )
+        ciphertext_blob = base64.b64encode(b'baz').decode('utf-8')
 
-        plaintext = kms_agent.decrypt(base64.b64encode(b'baz'), context)
+        plaintext = kms_agent.decrypt(ciphertext_blob, context)
 
         assert plaintext == 'qux'
 
@@ -43,7 +46,8 @@ class TestKMSAgent:
 
         ciphertext_blob = kms_agent.encrypt('baz', context)
 
-        assert ciphertext_blob == base64.b64encode(b'qux')
+        assert isinstance(ciphertext_blob, six.text_type)
+        assert ciphertext_blob == base64.b64encode(b'qux').decode('utf-8')
 
     def test_decrypt_encrypt_cached(self, kms_stub):
         context = {'foo': 'bar'}
@@ -58,11 +62,13 @@ class TestKMSAgent:
                 'Plaintext': b'qux',
             }
         )
+        ciphertext_blob = base64.b64encode(b'baz').decode('utf-8')
 
-        plaintext = kms_agent.decrypt(base64.b64encode(b'baz'), context)
-        ciphertext_blob = kms_agent.encrypt(plaintext, context)
+        plaintext = kms_agent.decrypt(ciphertext_blob, context)
+        ciphertext_blob2 = kms_agent.encrypt(plaintext, context)
 
-        assert ciphertext_blob == base64.b64encode(b'baz')
+        assert isinstance(ciphertext_blob2, six.text_type)
+        assert ciphertext_blob2 == base64.b64encode(b'baz').decode('utf-8')
 
     def test_encrypt_encrypt_cached(self, kms_stub):
         context = {'foo': 'bar'}
@@ -82,7 +88,8 @@ class TestKMSAgent:
         kms_agent.encrypt('baz', context)
         ciphertext_blob = kms_agent.encrypt('baz', context)
 
-        assert ciphertext_blob == base64.b64encode(b'qux')
+        assert isinstance(ciphertext_blob, six.text_type)
+        assert ciphertext_blob == base64.b64encode(b'qux').decode('utf-8')
 
     def test_decrypt_encrypt_context_change_no_cache(self, kms_stub):
         context = {'foo': 'bar'}
@@ -110,8 +117,10 @@ class TestKMSAgent:
                 'CiphertextBlob': b'quux',
             }
         )
+        ciphertext_blob = base64.b64encode(b'baz').decode('utf-8')
 
-        plaintext = kms_agent.decrypt(base64.b64encode(b'baz'), context)
-        ciphertext_blob = kms_agent.encrypt(plaintext, context2)
+        plaintext = kms_agent.decrypt(ciphertext_blob, context)
+        ciphertext_blob2 = kms_agent.encrypt(plaintext, context2)
 
-        assert ciphertext_blob == base64.b64encode(b'quux')
+        assert isinstance(ciphertext_blob2, six.text_type)
+        assert ciphertext_blob2 == base64.b64encode(b'quux').decode('utf-8')

@@ -30,7 +30,7 @@ class KMSAgent(object):
         return self._kms_client
 
     def decrypt(self, base64_ciphertext, encryption_context):
-        cipher_blob = base64.b64decode(base64_ciphertext)
+        cipher_blob = base64.b64decode(base64_ciphertext.encode('utf-8'))
         response = self.kms_client.decrypt(
             CiphertextBlob=cipher_blob,
             EncryptionContext=encryption_context,
@@ -52,7 +52,7 @@ class KMSAgent(object):
             Plaintext=plaintext.encode('utf-8'),
             EncryptionContext=encryption_context
         )
-        base64_ciphertext = base64.b64encode(response['CiphertextBlob'])
+        base64_ciphertext = base64.b64encode(response['CiphertextBlob']).decode('utf-8')
         self.cache[cache_key] = base64_ciphertext
         return base64_ciphertext
 

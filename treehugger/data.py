@@ -114,6 +114,7 @@ class EnvironmentDict(dict):
 
 class ToEncrypt(object):
     def __init__(self, plaintext):
+        assert isinstance(plaintext, six.text_type)
         self.plaintext = plaintext
 
     def __eq__(self, other):
@@ -125,6 +126,7 @@ class ToEncrypt(object):
 
 class Encrypted(object):
     def __init__(self, base64_ciphertext):
+        assert isinstance(base64_ciphertext, six.text_type)
         self.base64_ciphertext = base64_ciphertext
 
     def __eq__(self, other):
