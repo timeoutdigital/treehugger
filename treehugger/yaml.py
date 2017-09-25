@@ -50,6 +50,6 @@ def all_strs_text(obj):
     elif isinstance(obj, tuple):
         return tuple(all_strs_text(x) for x in obj)
     elif isinstance(obj, dict):
-        return {unicode(k): all_strs_text(v) for k, v in obj.iteritems()}
+        return {six.text_type(k): all_strs_text(v) for k, v in six.iteritems(obj)}
     else:
         return obj
