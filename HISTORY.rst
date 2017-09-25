@@ -8,9 +8,14 @@ Pending Release
 ---------------
 
 * (Insert new release notes below this line)
+
+2.0.0 (2017-09-25)
+------------------
+
 * Fix issue where ``!!binary`` tags were generated for encrypted variables on
-  Python 3. Treehugger should use only strings in its files now. This may be
-  backwards incompatible for some users.
+  Python 3, whilst they weren't on Python 2. Treehugger should use only strings
+  in its files for everything now. This may be backwards incompatible for some
+  users - you should only need to re-encrypt your files for this to work.
 
 1.2.1 (2017-09-02)
 ------------------
