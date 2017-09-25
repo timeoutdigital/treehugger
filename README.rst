@@ -93,6 +93,12 @@ Treehugger will load the User Data as YAML, extract the dictionary under the 'tr
 marked ``encrypted``, put them into the environment, and then replace itself with a copy of the application using
 `execlp <https://linux.die.net/man/3/execlp>`_.
 
+N.B. To be sure of the Python you're using to run Treehugger, you can also run it as a module. For example:
+
+.. code-block:: sh
+
+    /usr/local/bin/python2 -m treehugger exec -- /path/to/application
+
 Testing
 -------
 
