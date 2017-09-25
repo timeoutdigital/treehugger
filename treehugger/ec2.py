@@ -7,6 +7,7 @@ from requests.adapters import HTTPAdapter
 from requests.exceptions import ConnectionError, ConnectTimeout, HTTPError
 
 from .messaging import die
+from .yaml import safe_load
 
 try:
     from urllib3.util.retry import Retry
@@ -40,7 +41,7 @@ def load_user_data_as_yaml_or_die():
 def load_user_data_as_yaml():
     resp = session.get(USER_DATA_URL, timeout=10.0)
     resp.raise_for_status()
-    return yaml.load(resp.text)
+    return safe_load(resp.text)
 
 
 IDENTITY_URL = 'http://169.254.169.254/latest/dynamic/instance-identity/document'
