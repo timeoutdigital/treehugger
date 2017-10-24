@@ -6,14 +6,14 @@
 #
 backports.unittest-mock==1.3
 boto3==1.4.7
-botocore==1.7.28          # via boto3, s3transfer
+botocore==1.7.34          # via boto3, s3transfer
 certifi==2017.7.27.1      # via requests
 chardet==3.0.4            # via requests
 configparser==3.5.0       # via flake8
 cookies==2.2.1            # via responses
 docutils==0.14
 enum34==1.1.6             # via flake8
-flake8==3.4.1
+flake8==3.5.0
 funcsigs==1.0.2           # via mock
 futures==3.1.1            # via s3transfer
 idna==2.6                 # via requests
@@ -26,7 +26,7 @@ multilint==2.2.0
 pbr==3.1.1                # via mock
 py==1.4.34                # via pytest
 pycodestyle==2.3.1        # via flake8
-pyflakes==1.5.0           # via flake8
+pyflakes==1.6.0           # via flake8
 pygments==2.2.0
 pytest-responses==0.3.0
 pytest==3.2.3
