@@ -2,6 +2,7 @@ backports.unittest_mock
 boto3
 docutils
 flake8
+futures<3.2  # 3.2+ no longer py3 compatible
 isort
 mock
 modernize
