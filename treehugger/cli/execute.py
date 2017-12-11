@@ -22,7 +22,7 @@ exec_parser.add_argument('-f', '--file', type=str, default=None, dest='filename'
 exec_parser.add_argument('command', nargs=argparse.REMAINDER)
 
 exec_parser.add_argument('-i', '--ignore-missing', action='store_true', dest='ignoremissing',
-                         help='Don\'t die if there are no variables')
+                         help="Don't die if there are no variables")
 
 
 def execute(args):

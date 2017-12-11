@@ -9,6 +9,8 @@ Pending Release
 
 * (Insert new release notes below this line)
 
+* Add `--ignore-missing` argument to `exec` command to allow it to run when user-data isn't configured for the current EC2 instance
+
 2.0.0 (2017-09-25)
 ------------------
 
