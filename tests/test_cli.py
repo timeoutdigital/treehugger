@@ -313,11 +313,7 @@ class TestCLI:
 
     @responses.activate
     def test_exec_with_ignore_missing(self, kms_stub, capsys):
-        responses.add(
-            responses.GET,
-            USER_DATA_URL,
-            status=404,
-        )
+        responses.add(responses.GET, USER_DATA_URL, status=404)
 
         with mock.patch('os.execlp') as mock_execlp, mock.patch('os.environ', new={}) as mock_environ:
             main(['exec', '--ignore-missing', '--', 'env'])
