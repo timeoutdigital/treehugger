@@ -21,6 +21,9 @@ exec_parser.add_argument('-f', '--file', type=str, default=None, dest='filename'
                          help='The path to the file to use for environment variables, as opposed to EC2 User Data')
 exec_parser.add_argument('command', nargs=argparse.REMAINDER)
 
+exec_parser.add_argument('-i', '--ignore-missing', action='store_true', dest='ignoremissing',
+                         help='Don\'t die if there are no variables')
+
 
 def execute(args):
     command = args.command
@@ -34,7 +37,7 @@ def execute(args):
         data = yaml.load_file_or_die(args.filename)
         env_dict = EnvironmentDict.from_yaml_dict(data)
     else:
-        data = load_user_data_as_yaml_or_die()
+        data = load_user_data_as_yaml_or_die(args.ignoremissing)
         env_dict = EnvironmentDict.from_yaml_dict(data)
     unencrypted_env_dict = env_dict.decrypt_all_encrypted(plain=True)
     os.environ.update(unencrypted_env_dict)
