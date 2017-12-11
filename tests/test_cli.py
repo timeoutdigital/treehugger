@@ -311,6 +311,23 @@ class TestCLI:
             'TREEHUGGER_STAGE': 'qux',
         }
 
+    @responses.activate
+    def test_exec_with_ignore_missing(self, kms_stub, capsys):
+        responses.add(
+            responses.GET,
+            USER_DATA_URL,
+            status=404,
+        )
+
+        with mock.patch('os.execlp') as mock_execlp, mock.patch('os.environ', new={}) as mock_environ:
+            main(['exec', '--ignore-missing', '--', 'env'])
+
+        mock_execlp.assert_called_with('env', 'env')
+        assert mock_environ == {
+            'TREEHUGGER_APP': 'Missing',
+            'TREEHUGGER_STAGE': 'Missing',
+        }
+
     def test_exec_file(self, tmpdir, kms_stub):
         tmpfile = tmpdir.join('test.yml')
         encrypted_var = base64.b64encode(b'foo')
