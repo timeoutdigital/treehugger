@@ -23,13 +23,11 @@ def load_user_data_as_yaml_or_die(ignore_missing=False):
         data = load_user_data_as_yaml()
     except (ConnectTimeout, ConnectionError):
         die('Could not connect to EC2 metadata service - are we on an EC2 instance?')
-        raise SystemExit(1)
     except HTTPError as exc:
         if exc.response.status_code == 404 and ignore_missing:
             return {'TREEHUGGER_APP': 'Missing', 'TREEHUGGER_STAGE': 'Missing'}
 
         die('Got a {} from the EC2 metadata service when retrieving user data'.format(exc.response.status_code))
-        raise SystemExit(1)
     except yaml.error.YAMLError:
         die('Did not find valid YAML in the EC2 user data')
 
