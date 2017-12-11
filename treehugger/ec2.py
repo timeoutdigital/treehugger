@@ -18,15 +18,15 @@ except ImportError:
 USER_DATA_URL = 'http://169.254.169.254/latest/user-data'
 
 
-def load_user_data_as_yaml_or_die():
+def load_user_data_as_yaml_or_die(ignore_missing=False):
     try:
         data = load_user_data_as_yaml()
     except (ConnectTimeout, ConnectionError):
         die('Could not connect to EC2 metadata service - are we on an EC2 instance?')
         raise SystemExit(1)
     except HTTPError as exc:
-        die('Got a {} from the EC2 metadata service when retrieving user data'.format(exc.response.status_code))
-        raise SystemExit(1)
+        if not ignore_missing:
+            die('Got a {} from the EC2 metadata service when retrieving user data'.format(exc.response.status_code))
     except yaml.error.YAMLError:
         die('Did not find valid YAML in the EC2 user data')
 
