@@ -1,5 +1,5 @@
 import boto3
-import botocore
+from botocore.exceptions import ClientError
 
 from six.moves.urllib.parse import parse_qs, urlparse
 
@@ -7,13 +7,16 @@ from . import yaml
 from .messaging import die
 
 
+# initialise client here so can be stubbed for testing
+s3_client = boto3.client('s3')
+
+
 def fetch_s3_content_or_die(bucket_name, key, version=None):
     if not version:
         version = 'null'
-    s3_client = boto3.client('s3')
     try:
         s3_response_object = s3_client.get_object(Bucket=bucket_name, Key=key, VersionId=version)
-    except botocore.exceptions.ClientError as exc:
+    except ClientError as exc:
         die('Got "{}" when attempting to fetch key {} version {} from bucket {}'.format(
             exc.response['Error']['Code'],
             key,

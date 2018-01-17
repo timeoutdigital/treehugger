@@ -1,33 +1,44 @@
-from unittest import mock
+import io
 
 from treehugger.remote import include_remote_yaml_data_or_die
 
 
 class TestRemote:
 
-    def test_include_remote_yaml_data_or_die(self):
+    def test_include_remote_yaml_data_or_die(self, s3_stub):
 
-        fetch_counter = [0]  # must be mutable
+        s3_stub.add_response(
+            'get_object',
+            expected_params={
+                'Bucket': 'bucket',
+                'Key': 'filename.yml',
+                'VersionId': 'null',
+            },
+            service_response={
+                'Body': io.BytesIO(b'X: y'),
+            }
+        )
+        s3_stub.add_response(
+            'get_object',
+            expected_params={
+                'Bucket': 'bucket',
+                'Key': 'filename.yml',
+                'VersionId': '7',
+            },
+            service_response={
+                'Body': io.BytesIO(b'Z: zzz'),
+            }
+        )
 
-        def mock_fetch(bucket_name, key, version):
-            assert bucket_name == 'bucket'
-            assert key == 'filename.yml'
-            if fetch_counter[0] == 0:
-                assert version is None
-            else:
-                assert version == '7'
-            fetch_counter[0] += 1
-            return "X: y"
-
-        with mock.patch('treehugger.remote.fetch_s3_content_or_die', new=mock_fetch):
-            data = include_remote_yaml_data_or_die(
-                {
-                    'A': 'b',
-                    'include': [
-                        's3://bucket/filename.yml',
-                        's3://bucket/filename.yml?versionId=7'
-                    ],
-                }
-            )
-            assert data == {'A': 'b', 'X': 'y'}
-            assert fetch_counter == [2]
+        input_yaml_data = {
+            'A': 'b',
+            'include': [
+                's3://bucket/filename.yml',
+                's3://bucket/filename.yml?versionId=7'
+            ],
+        }
+        assert include_remote_yaml_data_or_die(input_yaml_data) == {
+            'A': 'b',
+            'X': 'y',
+            'Z': 'zzz',
+        }
