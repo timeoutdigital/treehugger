@@ -97,9 +97,10 @@ You can also pull in data from external sources by using the key `include`, for 
 
 .. code-block:: yaml
 
-    include: s3://bucket-name/filename.yml?versionId=7
+    include: 
+    - s3://bucket-name/filename.yml?versionId=7
 
-Where the url points to another yaml file consisting of environment variables. You can include a single url or a list of urls. The file(s) will be fetched, and the yaml data included. Currently only S3 urls are supported. Version ID is optional.
+Where the value is a list of urls pointing to other yaml files consisting of environment variables. The files will be fetched, and the yaml data included. Currently only S3 urls are supported. versionId is required.
 
 N.B. To be sure of the Python you're using to run Treehugger, you can also run it as a module. For example:
 
