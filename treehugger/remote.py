@@ -1,3 +1,6 @@
+# -*- coding:utf-8 -*-
+from __future__ import absolute_import, division, print_function, unicode_literals
+
 import boto3
 from botocore.exceptions import ClientError
 
@@ -5,7 +8,6 @@ from six.moves.urllib.parse import parse_qs, urlparse
 
 from . import yaml
 from .messaging import die
-
 
 # initialise client here so can be stubbed for testing
 s3_client = boto3.client('s3')
