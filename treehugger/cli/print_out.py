@@ -8,6 +8,7 @@ from six.moves import shlex_quote
 from .. import yaml
 from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
+from ..remote import include_remote_yaml_data_or_die
 from .parser import subparsers
 
 print_parser = subparsers.add_parser(
@@ -30,10 +31,10 @@ print_parser.add_argument('--single-line', action='store_true',
 def print_out(args):
     if args.filename:
         data = yaml.load_file_or_die(args.filename)
-        env_dict = EnvironmentDict.from_yaml_dict(data)
     else:
         data = load_user_data_as_yaml_or_die()
-        env_dict = EnvironmentDict.from_yaml_dict(data)
+    data = include_remote_yaml_data_or_die(data)
+    env_dict = EnvironmentDict.from_yaml_dict(data)
 
     if args.only_unencrypted:
         unencrypted_env_dict = env_dict.remove_all_encrypted(plain=True)

@@ -9,6 +9,10 @@ Pending Release
 
 * (Insert new release notes below this line)
 
+Add support for using the `include` key in yaml to point to other yaml files
+in S3 to be included
+
+
 2.1.0 (2017-12-11)
 ------------------
 
