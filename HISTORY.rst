@@ -9,9 +9,11 @@ Pending Release
 
 * (Insert new release notes below this line)
 
-Add support for using the `include` key in yaml to point to other yaml files
-in S3 to be included
+2.2.0 (2018-01-24)
+------------------
 
+* Add support for the ``include`` keyword to point to a YAML file on S3 to
+  merge in. This can be used to get past the EC2 User Data limit.
 
 2.1.0 (2017-12-11)
 ------------------

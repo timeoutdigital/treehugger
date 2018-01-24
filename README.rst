@@ -93,13 +93,15 @@ Treehugger will load the User Data as YAML, extract the dictionary under the 'tr
 marked ``encrypted``, put them into the environment, and then replace itself with a copy of the application using
 `execlp <https://linux.die.net/man/3/execlp>`_.
 
-You can also pull in data from external sources by using the key `include`, for example:
+You can also merge in data from an external source with the key ``include``, for example:
 
 .. code-block:: yaml
 
     include: s3://bucket-name/filename.yml?versionId=7
 
-Where the value is a URL pointing to another YAML file consisting of environment variables. The file will be fetched, and the YAML data included. Currently only S3 URLs are supported. versionId is required.
+Where the value is a URL pointing to another YAML file consisting of environment variables. The file will be fetched,
+and the keys merged in on top of anything defined locally. Currently only S3 URLs are supported, and the S3 API is used
+for them; ``versionId`` is required to avoid ambiguity.
 
 N.B. To be sure of the Python you're using to run Treehugger, you can also run it as a module. For example:
 
