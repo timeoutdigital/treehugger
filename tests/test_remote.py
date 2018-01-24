@@ -13,32 +13,17 @@ class TestRemote:
         s3_stub.add_response(
             'get_object',
             expected_params={
-                'Bucket': 'bucketA',
-                'Key': 'filename1.yml',
+                'Bucket': 'bucket',
+                'Key': 'filename.yml',
                 'VersionId': '1',
             },
             service_response={
-                'Body': io.BytesIO(b'X: y'),
+                'Body': io.BytesIO(b'X: y\nZ: zzz'),
             }
         )
-        s3_stub.add_response(
-            'get_object',
-            expected_params={
-                'Bucket': 'bucketB',
-                'Key': 'filename2.yml',
-                'VersionId': '7',
-            },
-            service_response={
-                'Body': io.BytesIO(b'Z: zzz'),
-            }
-        )
-
         input_yaml_data = {
             'A': 'b',
-            'include': [
-                's3://bucketA/filename1.yml?versionId=1',
-                's3://bucketB/filename2.yml?versionId=7',
-            ],
+            'include': 's3://bucket/filename.yml?versionId=1'
         }
         assert include_remote_yaml_data_or_die(input_yaml_data) == {
             'A': 'b',

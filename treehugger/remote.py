@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import boto3
+import six
 from botocore.exceptions import ClientError
 
 from six.moves.urllib.parse import parse_qs, urlparse
@@ -31,19 +32,18 @@ def include_remote_yaml_data_or_die(data):
     """
     include_key = 'include'
     if include_key in data:
-        url_data = data.pop(include_key)
-        if not isinstance(url_data, list):
-            die('"include" value should be a list')
-        for url in url_data:
-            parsed_url = urlparse(url)
-            if parsed_url.scheme.lower() != 's3':
-                die('Got an unsupported url scheme: {}'.format(parsed_url.scheme))
-            bucket_name = parsed_url.netloc
-            key = parsed_url.path[1:]
-            if not parsed_url.query:
-                die('S3 url missing versionId')
-            version = parse_qs(parsed_url.query)['versionId'][0]
-            yaml_str = fetch_s3_content_or_die(bucket_name, key, version)
-            yaml_data = yaml.safe_load(yaml_str)
-            data.update(yaml_data)
+        url = data.pop(include_key)
+        if not isinstance(url, six.string_types):
+            die("'include' value should be a string")
+        parsed_url = urlparse(url)
+        if parsed_url.scheme.lower() != 's3':
+            die('Got an unsupported url scheme: {}'.format(parsed_url.scheme))
+        bucket_name = parsed_url.netloc
+        key = parsed_url.path[1:]
+        if not parsed_url.query:
+            die('S3 url missing versionId')
+        version = parse_qs(parsed_url.query)['versionId'][0]
+        yaml_str = fetch_s3_content_or_die(bucket_name, key, version)
+        yaml_data = yaml.safe_load(yaml_str)
+        data.update(yaml_data)
     return data

@@ -2,6 +2,7 @@
 from __future__ import absolute_import, division, print_function, unicode_literals
 
 import base64
+import io
 import json
 import os
 import textwrap
@@ -455,6 +456,58 @@ class TestCLI:
 
         assert out_lines == [
             'MY_ENCRYPTED_VAR=quux',
+            'MY_UNENCRYPTED_VAR=bar',
+            'TREEHUGGER_APP=baz',
+            'TREEHUGGER_STAGE=qux',
+            '',
+        ]
+
+    def test_print_file_with_include(self, tmpdir, kms_stub, s3_stub, capsys):
+        tmpfile = tmpdir.join('test.yml')
+        encrypted_var = base64.b64encode(b'foo')
+        tmpfile.write(textwrap.dedent('''\
+            include: s3://my-bucket/my_file.yml?versionId=2
+            MY_ENCRYPTED_VAR:
+              encrypted: {encrypted_var}
+            MY_UNENCRYPTED_VAR: bar
+            TREEHUGGER_APP: baz
+            TREEHUGGER_STAGE: qux
+        '''.format(encrypted_var=encrypted_var.decode('utf-8'))))
+        kms_stub.add_response(
+            'decrypt',
+            expected_params={
+                'CiphertextBlob': b'foo',
+                'EncryptionContext': {
+                    'treehugger_app': 'baz',
+                    'treehugger_key': 'MY_ENCRYPTED_VAR',
+                    'treehugger_stage': 'qux',
+                }
+            },
+            service_response={
+                'KeyId': 'treehugger',
+                'Plaintext': b'quux',
+            }
+        )
+        s3_stub.add_response(
+            'get_object',
+            expected_params={
+                'Bucket': 'my-bucket',
+                'Key': 'my_file.yml',
+                'VersionId': '2',
+            },
+            service_response={
+                'Body': io.BytesIO(b'MY_INCLUDED_VAR: IliveinAWS'),
+            }
+        )
+
+        main(['print', '-f', six.text_type(tmpfile)])
+        out, err = capsys.readouterr()
+
+        out_lines = out.split('\n')
+
+        assert out_lines == [
+            'MY_ENCRYPTED_VAR=quux',
+            'MY_INCLUDED_VAR=IliveinAWS',
             'MY_UNENCRYPTED_VAR=bar',
             'TREEHUGGER_APP=baz',
             'TREEHUGGER_STAGE=qux',
