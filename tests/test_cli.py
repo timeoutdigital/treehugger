@@ -496,7 +496,7 @@ class TestCLI:
                 'VersionId': '2',
             },
             service_response={
-                'Body': io.BytesIO(b'MY_INCLUDED_VAR: IliveinAWS'),
+                'Body': io.BytesIO(b'MY_INCLUDED_VAR: IliveinS3'),
             }
         )
 
@@ -507,7 +507,7 @@ class TestCLI:
 
         assert out_lines == [
             'MY_ENCRYPTED_VAR=quux',
-            'MY_INCLUDED_VAR=IliveinAWS',
+            'MY_INCLUDED_VAR=IliveinS3',
             'MY_UNENCRYPTED_VAR=bar',
             'TREEHUGGER_APP=baz',
             'TREEHUGGER_STAGE=qux',
