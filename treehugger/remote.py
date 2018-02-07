@@ -4,7 +4,6 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 import boto3
 import six
 from botocore.exceptions import ClientError
-
 from six.moves.urllib.parse import parse_qs, urlparse
 
 from . import yaml
