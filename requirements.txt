@@ -32,7 +32,7 @@ pyflakes==1.6.0           # via flake8
 pygments==2.2.0
 pytest-responses==0.3.0
 pytest==3.4.2
-python-dateutil==2.6.1    # via botocore
+python-dateutil==2.7.0    # via botocore
 pyyaml==3.12
 requests==2.18.4
 responses==0.8.1          # via pytest-responses
