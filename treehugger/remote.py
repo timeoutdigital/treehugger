@@ -1,15 +1,13 @@
 # -*- coding:utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
-import boto3
 import six
 from botocore.exceptions import ClientError
 from six.moves.urllib.parse import parse_qs, urlparse
 
 from . import yaml
+from .client import s3_client
 from .messaging import die
-
-s3_client = boto3.client('s3')
 
 
 def fetch_s3_content_or_die(bucket_name, key, version):

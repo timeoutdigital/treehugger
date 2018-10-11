@@ -3,15 +3,13 @@ from __future__ import absolute_import, division, print_function, unicode_litera
 
 import errno
 
-import boto3
 import six
 import yaml
 from botocore.exceptions import ClientError
 from six.moves.urllib.parse import parse_qs, urlparse
 
+from .client import s3_client
 from .messaging import die
-
-s3_client = boto3.client('s3')
 
 
 def safe_load(fp_or_text):
