@@ -8,7 +8,7 @@ from six.moves import shlex_quote
 from .. import yaml
 from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
-from ..s3 import include_remote_yaml_data_or_die
+from ..yaml import include_remote_yaml_data_or_die
 from .parser import subparsers
 
 print_parser = subparsers.add_parser(
