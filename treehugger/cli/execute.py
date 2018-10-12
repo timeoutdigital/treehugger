@@ -8,7 +8,7 @@ import sys
 from .. import yaml
 from ..data import EnvironmentDict
 from ..ec2 import load_user_data_as_yaml_or_die
-from ..remote import include_remote_yaml_data_or_die
+from ..s3 import include_remote_yaml_data_or_die
 from .parser import subparsers
 
 exec_parser = subparsers.add_parser(

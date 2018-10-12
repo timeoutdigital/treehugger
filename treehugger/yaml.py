@@ -5,44 +5,14 @@ import errno
 
 import six
 import yaml
-from botocore.exceptions import ClientError
-from six.moves.urllib.parse import parse_qs, urlparse
 
-from .client import s3_client
 from .messaging import die
+from .s3 import read_file_from_s3
 
 
 def safe_load(fp_or_text):
     obj = yaml.safe_load(fp_or_text)
     return all_strs_text(obj)
-
-
-def _split_s3_filename(s3_key):
-    parsed_url = urlparse(s3_key)
-    if parsed_url.scheme.lower() != 's3':
-        die('Got an unsupported url scheme: {}'.format(parsed_url.scheme))
-    bucket_name = parsed_url.netloc
-    bucket_key = parsed_url.path[1:]
-    version = parse_qs(parsed_url.query)['versionId'][0]
-    return bucket_name, bucket_key, version
-
-
-def read_file_from_s3(filename):
-    bucket_name, bucket_key, version = _split_s3_filename(filename)
-    try:
-        obj = s3_client.get_object(
-            Bucket=bucket_name,
-            Key=bucket_key,
-            VersionId=version,
-        )
-    except ClientError as exc:
-        die('Got "{}" when attempting to fetch key {} version {} from bucket {}'.format(
-            exc.response['Error']['Code'],
-            bucket_key,
-            version,
-            bucket_name,
-        ))
-    return obj['Body'].read()
 
 
 def load_file_or_die(filename):
