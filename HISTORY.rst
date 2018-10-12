@@ -9,13 +9,6 @@ Pending Release
 
 * (Insert new release notes below this line)
 
-2.3.0 (2018-10-11)
-------------------
-
-* Add support for the s3 with the ``--file`` argument.  This can be used to
-  run treehugger on systems without UserData (E.g. Containers)
-* Update to Python dependencies
-
 2.2.0 (2018-01-24)
 ------------------
 
