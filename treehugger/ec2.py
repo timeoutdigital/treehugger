@@ -1,6 +1,8 @@
 # -*- coding:utf-8 -*-
 from __future__ import absolute_import, division, print_function, unicode_literals
 
+import os
+
 import yaml
 from requests import Session
 from requests.adapters import HTTPAdapter
@@ -16,6 +18,13 @@ except ImportError:
     from requests.packages.urllib3.util.retry import Retry
 
 USER_DATA_URL = 'http://169.254.169.254/latest/user-data'
+
+
+def load_env_or_user_data_as_yaml_or_die(ignore_missing=False):
+    env = os.environ.get('TREEHUGGER_DATA')
+    if env is not None:
+        return safe_load(env)
+    return load_user_data_as_yaml_or_die(ignore_missing)
 
 
 def load_user_data_as_yaml_or_die(ignore_missing=False):
