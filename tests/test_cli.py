@@ -514,6 +514,56 @@ class TestCLI:
             '',
         ]
 
+    def test_print_env_s3(self, kms_stub, s3_stub, capsys):
+        encrypted_var = base64.b64encode(b'foo')
+        os.environ['TREEHUGGER_DATA'] = 's3://my-bucket/my_file.yml?versionId=2'
+        response = textwrap.dedent('''\
+                            MY_ENCRYPTED_VAR:
+                              encrypted: {encrypted_var}
+                            MY_UNENCRYPTED_VAR: bar
+                            TREEHUGGER_APP: baz
+                            TREEHUGGER_STAGE: qux
+                            '''.format(encrypted_var=encrypted_var.decode('utf-8'))).encode()
+        s3_stub.add_response(
+            'get_object',
+            expected_params={
+                'Bucket': 'my-bucket',
+                'Key': 'my_file.yml',
+                'VersionId': '2',
+            },
+            service_response={
+                'Body': io.BytesIO(response)
+            }
+        )
+        kms_stub.add_response(
+            'decrypt',
+            expected_params={
+                'CiphertextBlob': b'foo',
+                'EncryptionContext': {
+                    'treehugger_app': 'baz',
+                    'treehugger_key': 'MY_ENCRYPTED_VAR',
+                    'treehugger_stage': 'qux',
+                }
+            },
+            service_response={
+                'KeyId': 'treehugger',
+                'Plaintext': b'quux',
+            }
+        )
+
+        main(['print'])
+        out, err = capsys.readouterr()
+        print('----------', out)
+        out_lines = out.split('\n')
+        assert out_lines == [
+            'MY_ENCRYPTED_VAR=quux',
+            'MY_UNENCRYPTED_VAR=bar',
+            'TREEHUGGER_APP=baz',
+            'TREEHUGGER_STAGE=qux',
+            '',
+        ]
+        del os.environ['TREEHUGGER_DATA']
+
     def test_print_no_var_with_quote(self, tmpdir, capsys):
         tmpfile = tmpdir.join('test.yml')
         tmpfile.write(textwrap.dedent('''\

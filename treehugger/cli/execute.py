@@ -7,8 +7,9 @@ import sys
 
 from .. import yaml
 from ..data import EnvironmentDict
-from ..ec2 import load_env_or_user_data_as_yaml_or_die
-from ..yaml import include_remote_yaml_data_or_die
+from ..ec2 import load_user_data_as_yaml_or_die
+from ..s3 import fetch_s3_content_or_die
+from ..yaml import include_remote_yaml_data_or_die, safe_load
 from .parser import subparsers
 
 exec_parser = subparsers.add_parser(
@@ -28,17 +29,21 @@ exec_parser.add_argument('-i', '--ignore-missing', action='store_true', dest='ig
 
 def execute(args):
     command = args.command
+    url = os.environ.get('TREEHUGGER_DATA')
     if command and command[0] == '--':
         command = command[1:]
     if not command:
         print('No command to execute provided', file=sys.stderr)
         raise SystemExit(1)
 
-    if args.filename:
-        data = yaml.load_file_or_die(args.filename)
+    if url is not None:
+        data = safe_load(fetch_s3_content_or_die(url))
     else:
-        data = load_env_or_user_data_as_yaml_or_die(args.ignoremissing)
-    data = include_remote_yaml_data_or_die(data)
+        if args.filename:
+            data = yaml.load_file_or_die(args.filename)
+        else:
+            data = load_user_data_as_yaml_or_die(args.ignoremissing)
+        data = include_remote_yaml_data_or_die(data)
     env_dict = EnvironmentDict.from_yaml_dict(data)
     unencrypted_env_dict = env_dict.decrypt_all_encrypted(plain=True)
     os.environ.update(unencrypted_env_dict)

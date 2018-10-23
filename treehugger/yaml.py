@@ -7,7 +7,7 @@ import six
 import yaml
 
 from .messaging import die
-from .s3 import fetch_s3_content
+from .s3 import fetch_s3_content_or_die
 
 
 def safe_load(fp_or_text):
@@ -17,7 +17,7 @@ def safe_load(fp_or_text):
 
 def load_file_or_die(filename):
     if filename.startswith('s3://'):
-        return safe_load(fetch_s3_content(filename))
+        return safe_load(fetch_s3_content_or_die(filename))
     try:
         with open(filename, 'r') as fp:
             return safe_load(fp)
@@ -67,7 +67,7 @@ def include_remote_yaml_data_or_die(data):
         url = data.pop(include_key)
         if not isinstance(url, six.string_types):
             die("'include' value should be a string")
-        yaml_str = fetch_s3_content(url)
+        yaml_str = fetch_s3_content_or_die(url)
         yaml_data = yaml.safe_load(yaml_str)
         data.update(yaml_data)
     return data
