@@ -119,8 +119,7 @@ class ToEncrypt(object):
 
     def __eq__(self, other):
         return (
-            self.__class__ is other.__class__ and
-            self.plaintext == other.plaintext
+            self.__class__ is other.__class__ and self.plaintext == other.plaintext
         )
 
 
@@ -131,6 +130,5 @@ class Encrypted(object):
 
     def __eq__(self, other):
         return (
-            self.__class__ is other.__class__ and
-            self.base64_ciphertext == other.base64_ciphertext
+            self.__class__ is other.__class__ and self.base64_ciphertext == other.base64_ciphertext
         )
