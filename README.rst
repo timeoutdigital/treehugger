@@ -103,6 +103,15 @@ Where the value is a URL pointing to another YAML file consisting of environment
 and the keys merged in on top of anything defined locally. Currently only S3 URLs are supported, and the S3 API is used
 for them; ``versionId`` is required to avoid ambiguity.
 
+It's also possible to set the location of a external source in an environment variable:
+
+.. code-block:: sh
+
+   TREEHUGGER_DATA='s3://bucket-name/filename.yml?versionId=7' treehugger exec -- /path/to/application
+
+this is useful when using treehugger within containers where UserData is not available.  If the TREEHUGGER_DATA
+environment variable is set, UserData or files will not be read.
+
 N.B. To be sure of the Python you're using to run Treehugger, you can also run it as a module. For example:
 
 .. code-block:: sh

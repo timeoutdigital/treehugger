@@ -5,7 +5,7 @@ import pytest
 from botocore.stub import Stubber
 
 from treehugger.kms import kms_agent
-from treehugger.remote import s3_client
+from treehugger.s3 import s3_client
 
 
 @pytest.fixture(scope='function', autouse=True)
