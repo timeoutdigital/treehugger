@@ -9,6 +9,13 @@ Pending Release
 
 * (Insert new release notes below this line)
 
+2.3.0 (2018-10-24)
+------------------
+
+* Add a ``TREEHUGGER_DATA`` environment variable which points to a YAML file on S3
+  and reads in the contents. This can be used on systems with out EC2 UserData
+  support such as containers.
+
 2.2.0 (2018-01-24)
 ------------------
 
