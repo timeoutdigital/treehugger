@@ -9,7 +9,7 @@ modernize
 multilint
 Pygments
 pytest
-pytest-responses
 PyYAML
 requests
+requests-mock
 six
