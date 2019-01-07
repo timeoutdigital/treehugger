@@ -54,7 +54,7 @@ def test_encrypt(tmpdir, kms_stub):
 
     main(['encrypt-file', six.text_type(tmpfile)])
 
-    data = yaml.load(tmpfile.read())
+    data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
     assert data['MY_UNENCRYPTED_VAR'] == 'bar'
     assert data['TREEHUGGER_APP'] == 'baz'
@@ -90,7 +90,7 @@ def test_encrypt_different_key(tmpdir, kms_stub):
 
     main(['-k', key_arn, 'encrypt-file', six.text_type(tmpfile)])
 
-    data = yaml.load(tmpfile.read())
+    data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
     assert data['MY_UNENCRYPTED_VAR'] == 'bar'
     assert data['TREEHUGGER_APP'] == 'baz'
@@ -127,7 +127,7 @@ def test_encrypt_different_key_env_var(tmpdir, kms_stub):
     with mock.patch.dict(os.environ, {'TREEHUGGER_KEY': key_id}):
         main(['encrypt-file', six.text_type(tmpfile)])
 
-    data = yaml.load(tmpfile.read())
+    data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
     assert data['MY_UNENCRYPTED_VAR'] == 'bar'
     assert data['TREEHUGGER_APP'] == 'baz'
@@ -162,7 +162,7 @@ def test_decrypt(tmpdir, kms_stub):
 
     main(['decrypt-file', six.text_type(tmpfile)])
 
-    data = yaml.load(tmpfile.read())
+    data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'to_encrypt': 'quux'}
     assert data['MY_UNENCRYPTED_VAR'] == 'bar'
     assert data['TREEHUGGER_APP'] == 'baz'
