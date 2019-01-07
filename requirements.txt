@@ -34,7 +34,7 @@ pyflakes==2.0.0           # via flake8
 pygments==2.2.0
 pytest==3.9.3
 python-dateutil==2.7.5    # via botocore
-pyyaml==3.13
+pyyaml==4.2b4
 requests-mock==1.5.2
 requests==2.20.0
 s3transfer==0.1.13        # via boto3
