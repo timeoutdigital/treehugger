@@ -1,0 +1,12 @@
+boto3
+docutils
+flake8
+isort
+mock
+modernize
+multilint
+Pygments
+pytest
+PyYAML
+requests
+requests-mock
