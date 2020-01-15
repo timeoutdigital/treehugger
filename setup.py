@@ -31,7 +31,7 @@ setup(
         'PyYAML',
         'requests',
     ],
-    python_requires='>=3.4, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
+    python_requires='>=3.4',
     license='ISC License',
     zip_safe=False,
     entry_points={
