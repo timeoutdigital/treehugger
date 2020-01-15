@@ -1,9 +1,4 @@
-# -*- coding:utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import sys
-
-import six
 
 from ..kms import kms_agent
 from .decrypt_file import decrypt_file
@@ -20,7 +15,7 @@ def main(args_list=None):
     args = parser.parse_args(args_list)
 
     # Global arguments
-    kms_agent.key_id = six.text_type(args.key_id)
+    kms_agent.key_id = str(args.key_id)
 
     # Call specific function
     func = command_funcs[args.command_name]

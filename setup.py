@@ -1,6 +1,3 @@
-# -*- coding:utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import codecs
 import os
 import re
@@ -16,7 +13,7 @@ def get_version(filename):
 
 version = get_version(os.path.join('treehugger', '__init__.py'))
 
-with codecs.open('README.rst', encoding='utf-8') as f:
+with open('README.rst') as f:
     long_description = f.read()
 
 setup(
@@ -33,9 +30,8 @@ setup(
         'boto3',
         'PyYAML',
         'requests',
-        'six',
     ],
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
+    python_requires='>=3.4, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*',
     license='ISC License',
     zip_safe=False,
     entry_points={
@@ -49,7 +45,6 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: ISC License (ISCL)',
         'Natural Language :: English',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3.4',
         'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',

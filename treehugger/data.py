@@ -1,8 +1,3 @@
-# -*- coding:utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
-import six
-
 from .kms import kms_agent
 
 
@@ -26,13 +21,13 @@ class EnvironmentDict(dict):
         assert isinstance(obj, dict)
         new = EnvironmentDict()
         for key, value in obj.items():
-            assert isinstance(key, six.string_types), "Keys must be strings in treehugger data"
+            assert isinstance(key, str), "Keys must be strings in treehugger data"
             if isinstance(value, dict):
                 if 'to_encrypt' in value:
                     new_value = ToEncrypt(value['to_encrypt'])
                 elif 'encrypted' in value:
                     new_value = Encrypted(value['encrypted'])
-            elif isinstance(value, six.string_types):
+            elif isinstance(value, str):
                 new_value = value
             else:
                 raise ValueError('Invalid object in treehugger data: {}'.format(value))
@@ -42,7 +37,7 @@ class EnvironmentDict(dict):
     def to_yaml_dict(self):
         new = {}
         for key, value in self.items():
-            if isinstance(value, six.string_types):
+            if isinstance(value, str):
                 new[key] = value
             elif isinstance(value, ToEncrypt):
                 new[key] = {'to_encrypt': value.plaintext}
@@ -114,7 +109,7 @@ class EnvironmentDict(dict):
 
 class ToEncrypt(object):
     def __init__(self, plaintext):
-        assert isinstance(plaintext, six.text_type)
+        assert isinstance(plaintext, str)
         self.plaintext = plaintext
 
     def __eq__(self, other):
@@ -125,7 +120,7 @@ class ToEncrypt(object):
 
 class Encrypted(object):
     def __init__(self, base64_ciphertext):
-        assert isinstance(base64_ciphertext, six.text_type)
+        assert isinstance(base64_ciphertext, str)
         self.base64_ciphertext = base64_ciphertext
 
     def __eq__(self, other):
