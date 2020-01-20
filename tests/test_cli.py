@@ -1,6 +1,3 @@
-# -*- coding:utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import base64
 import io
 import json
@@ -9,7 +6,6 @@ import textwrap
 from unittest import mock
 
 import pytest
-import six
 import yaml
 
 from treehugger import __version__
@@ -52,7 +48,7 @@ def test_encrypt(tmpdir, kms_stub):
         }
     )
 
-    main(['encrypt-file', six.text_type(tmpfile)])
+    main(['encrypt-file', str(tmpfile)])
 
     data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
@@ -88,7 +84,7 @@ def test_encrypt_different_key(tmpdir, kms_stub):
         }
     )
 
-    main(['-k', key_arn, 'encrypt-file', six.text_type(tmpfile)])
+    main(['-k', key_arn, 'encrypt-file', str(tmpfile)])
 
     data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
@@ -125,7 +121,7 @@ def test_encrypt_different_key_env_var(tmpdir, kms_stub):
     )
 
     with mock.patch.dict(os.environ, {'TREEHUGGER_KEY': key_id}):
-        main(['encrypt-file', six.text_type(tmpfile)])
+        main(['encrypt-file', str(tmpfile)])
 
     data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'encrypted': base64.b64encode(b'quux').decode('utf-8')}
@@ -160,7 +156,7 @@ def test_decrypt(tmpdir, kms_stub):
         }
     )
 
-    main(['decrypt-file', six.text_type(tmpfile)])
+    main(['decrypt-file', str(tmpfile)])
 
     data = yaml.safe_load(tmpfile.read())
     assert data['MY_ENCRYPTED_VAR'] == {'to_encrypt': 'quux'}
@@ -234,7 +230,7 @@ def test_edit(tmpdir, kms_stub):
         }
     )
     with mock.patch.dict(os.environ, {'EDITOR': 'nano'}), mock.patch('subprocess.call', new=fake_call):
-        main(['edit', six.text_type(tmpfile)])
+        main(['edit', str(tmpfile)])
 
 
 def test_edit_no_change(tmpdir, kms_stub):
@@ -265,7 +261,7 @@ def test_edit_no_change(tmpdir, kms_stub):
 
     with mock.patch.dict(os.environ, {'EDITOR': 'nano'}), mock.patch('subprocess.call') as mock_call:
         mock_call.return_value = 0
-        main(['edit', six.text_type(tmpfile)])
+        main(['edit', str(tmpfile)])
 
     editor_args = mock_call.mock_calls[0][1][0]
     assert len(editor_args) == 2
@@ -355,7 +351,7 @@ def test_exec_file(tmpdir, kms_stub):
     )
 
     with mock.patch('os.execlp') as mock_execlp, mock.patch('os.environ', new={}) as mock_environ:
-        main(['exec', '-f', six.text_type(tmpfile), '--', 'env'])
+        main(['exec', '-f', str(tmpfile), '--', 'env'])
 
     mock_execlp.assert_called_with('env', 'env')
     assert mock_environ == {
@@ -454,7 +450,7 @@ def test_print_file(tmpdir, kms_stub, capsys):
         }
     )
 
-    main(['print', '-f', six.text_type(tmpfile)])
+    main(['print', '-f', str(tmpfile)])
     out, err = capsys.readouterr()
 
     out_lines = out.split('\n')
@@ -506,7 +502,7 @@ def test_print_file_with_include(tmpdir, kms_stub, s3_stub, capsys):
         }
     )
 
-    main(['print', '-f', six.text_type(tmpfile)])
+    main(['print', '-f', str(tmpfile)])
     out, err = capsys.readouterr()
 
     out_lines = out.split('\n')
@@ -580,7 +576,7 @@ def test_print_no_var_with_quote(tmpdir, capsys):
         TREEHUGGER_STAGE: qux
     '''))
 
-    main(['print', '-f', six.text_type(tmpfile)])
+    main(['print', '-f', str(tmpfile)])
     out, err = capsys.readouterr()
 
     out_lines = out.split('\n')
@@ -603,7 +599,7 @@ def test_print_only_unencrypted(tmpdir, capsys):
         TREEHUGGER_STAGE: qux
     '''))
 
-    main(['print', '-f', six.text_type(tmpfile), '--only-unencrypted'])
+    main(['print', '-f', str(tmpfile), '--only-unencrypted'])
     out, err = capsys.readouterr()
 
     out_lines = out.split('\n')
@@ -624,7 +620,7 @@ def test_print_single_line(tmpdir, capsys):
         TREEHUGGER_STAGE: qux
     '''))
 
-    main(['print', '-f', six.text_type(tmpfile), '--single-line'])
+    main(['print', '-f', str(tmpfile), '--single-line'])
     out, err = capsys.readouterr()
 
     assert out == 'MY_UNENCRYPTED_VAR=bar TREEHUGGER_APP=baz TREEHUGGER_STAGE=qux\n'
@@ -638,7 +634,7 @@ def test_print_json(tmpdir, capsys):
         TREEHUGGER_STAGE: qux
     '''))
 
-    main(['print', '-f', six.text_type(tmpfile), '--json'])
+    main(['print', '-f', str(tmpfile), '--json'])
     out, err = capsys.readouterr()
 
     assert out.count('\n') == 5
@@ -657,7 +653,7 @@ def test_print_json_single_line(tmpdir, capsys):
         TREEHUGGER_STAGE: qux
     '''))
 
-    main(['print', '-f', six.text_type(tmpfile), '--json', '--single-line'])
+    main(['print', '-f', str(tmpfile), '--json', '--single-line'])
     out, err = capsys.readouterr()
 
     assert out.count('\n') == 1

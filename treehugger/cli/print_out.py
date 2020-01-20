@@ -1,10 +1,6 @@
-# -*- coding:utf-8 -*-
-from __future__ import absolute_import, division, print_function, unicode_literals
-
 import json
 import os
-
-from six.moves import shlex_quote
+import shlex
 
 from .. import yaml
 from ..data import EnvironmentDict
@@ -53,7 +49,7 @@ def print_out(args):
         return
 
     output = [
-        '{}={}'.format(key, shlex_quote(value))
+        '{}={}'.format(key, shlex.quote(value))
         for key, value in sorted(unencrypted_env_dict.items())
     ]
 

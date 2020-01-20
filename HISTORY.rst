@@ -9,6 +9,18 @@ Pending Release
 
 * (Insert new release notes below this line)
 
+3.0.0 (2020-01-20)
+------------------
+
+* Update Dependencies
+* Drop support for Python 2
+* Remove coding header and __future__ imports
+* Remove use of six
+* In setup.py, remove use of codecs.open, stop requiring kwargs-only and six
+* In README.rst, update to "Python 3.4+ supported."
+* In requirements.in, remove futures mock and six
+* In tox.ini, stop testing on Python 2
+
 2.3.0 (2018-10-24)
 ------------------
 
