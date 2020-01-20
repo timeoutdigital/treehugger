@@ -9,7 +9,7 @@ Takes care of your environment (variables) on AWS.
 Requirements
 ------------
 
-* Python 2.7+ or 3.4+
+* Python 3.4+
 * Some simple dependencies as listed in ``setup.py`` - ``boto3``, ``PyYAML``,
   ``requests``, and ``six``.
 * A KMS key in your account aliased as ``alias/treehugger``.
@@ -116,7 +116,7 @@ N.B. To be sure of the Python you're using to run Treehugger, you can also run i
 
 .. code-block:: sh
 
-    /usr/local/bin/python2 -m treehugger exec -- /path/to/application
+    /usr/local/bin/python -m treehugger exec -- /path/to/application
 
 Testing
 -------
